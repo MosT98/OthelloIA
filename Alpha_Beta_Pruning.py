@@ -1,9 +1,21 @@
+from Heuristic_Evaluation import heuristic_evaluation_function
+
 import numpy as np
 import math
 
-from Heuristic_Evaluation import heuristic_evaluation_function
-
 computer_piece = 2
+
+
+def add_piece_to_board(board, row, column, current_piece):
+    from Board_Representation import isValidMove
+
+    pieces_to_flip = isValidMove(board, row, column, current_piece)
+    if len(pieces_to_flip) > 0:
+        board[row][column] = current_piece
+        for row, col in pieces_to_flip:
+            board[row][col] = current_piece
+
+    return board
 
 
 def ordering_moves(board, current_piece, depth):
@@ -14,7 +26,7 @@ def ordering_moves(board, current_piece, depth):
 
     for move in possible_moves:
         board_modified = np.copy(board)
-        board_modified[move[0]][move[1]] = current_piece
+        add_piece_to_board(board_modified, move[0], move[1], current_piece)
         scores_possible_moves.append(heuristic_evaluation_function(board_modified, current_piece))
 
     possible_moves_sorted = ()
@@ -55,7 +67,7 @@ def alpha_beta_pruning_alg(board, current_piece, alpha, beta, current_depth, tar
     else:
         for move in valid_moves:
             board_modified = np.copy(board)
-            board_modified[move[0]][move[1]] = current_piece
+            add_piece_to_board(board_modified, move[0], move[1], current_piece)
             new_row, new_column, new_value = alpha_beta_pruning_alg(board_modified, 3 - current_piece, alpha, beta,
                                                                     current_depth + 1, target_depth)
 

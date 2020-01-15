@@ -1,6 +1,8 @@
 from Graphic_Representation import *
 from Heuristic_Evaluation import heuristic_evaluation_function
 from Alpha_Beta_Pruning import alpha_beta_pruning
+from Negamax import negamax
+from Quiescence_Search import quiescence_search
 
 import sys
 import numpy as np
@@ -198,8 +200,28 @@ if __name__ == '__main__':
                 #make_move(board, row, col, 2)
 
                 #Alpha Beta Pruning
-                row, column = alpha_beta_pruning(board, 2, 2)
-                make_move(board, row, column, 2)
+                #row, column = alpha_beta_pruning(board, 2, 3)
+                #print(row, column)
+                #if isOnBoard(row, column):
+                #    make_move(board, row, column, 2)
+                #else:
+                #    print("Computer skips this round.")
+
+                #Negamax
+                #row, column = negamax(board, 2, 3)
+                #print(row, column)
+                #if isOnBoard(row,column):
+                #    make_move(board, row, column, 2)
+                #else:
+                #    print("Computer skips this round.")
+
+                #Quiescene Search
+                row, column = quiescence_search(board, 2, 3)
+                print(row, column)
+                if isOnBoard(row,column):
+                   make_move(board, row, column, 2)
+                else:
+                   print("Computer skips this round.")
 
                 if get_moves(board, 1) == []:
                     game_over = True
