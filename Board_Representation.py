@@ -1,12 +1,13 @@
+import sys
 import numpy as np
 import pandas as pd
+from Graphic_Representation import *
+
 
 pd.set_option('display.expand_frame_repr', False)
-
 ROWS = 8
 COLUMNS = 8
 DIRECTIONS = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]  # NV, N, NE, E, V, SV, S, SE
-
 
 def create_board():
     board = np.zeros((ROWS, COLUMNS), dtype=int)
@@ -128,34 +129,46 @@ def make_move(board, row, column, piece):
         return False
 
     board[row][column] = piece
+
     for r, c in pieces_to_flip:
         board[r][c] = piece
+
+    drawing_pieces(board, piece)
     return True
 
 
 if __name__ == '__main__':
+    pg.init()
     board = create_board()
-    # b2 = board_with_moves(board, 1)
-    # show_board(b2)
-    turn = 'p1'
-    while True:
-        if turn == 'p1':
-            show_board(board)
-            move = player_move(board, 1)
-            make_move(board, move[0], move[1], 1)
-
-            if get_moves(board, 2) == []:
-                break
-            else:
-                turn = 'p2'
-        elif turn == 'p2':
-            show_board(board)
-            move = player_move(board, 2)
-            make_move(board, move[0], move[1], 2)
-
-            if get_moves(board, 1) == []:
-                break
-            else:
-                turn = 'p1'
-
+    screen = pg.display.set_mode(BOARD_SIZE)
+    draw_board(board)
+    pg.display.update()
     show_board(board)
+    game_over = False
+    turn = 0
+    while not game_over:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                sys.exit()
+
+            if event.type == pg.MOUSEBUTTONDOWN:
+                if turn == 0:
+                    print("PLAYER 1")
+                    position = get_mouse_position()
+                    make_move(board, position[0], position[1], 1)
+                    if get_moves(board, 2) == []:
+                        game_over = True
+                        break
+                    else:
+                        turn += 1
+                elif turn == 1:
+                    print("PLAYER 2")
+                    position = get_mouse_position()
+                    make_move(board, position[0], position[1], 2)
+                    if get_moves(board, 1) == []:
+                        game_over = True
+                        break
+                    else:
+                        turn -= 1
+        if game_over == True:
+            pg.time.wait(3000)
