@@ -5,11 +5,11 @@ from Graphic_Representation import *
 from Heuristic_Evaluation import heuristic_evaluation_function
 import math
 
-
 pd.set_option('display.expand_frame_repr', False)
 ROWS = 8
 COLUMNS = 8
 DIRECTIONS = [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]  # NV, N, NE, E, V, SV, S, SE
+
 
 def create_board():
     board = np.zeros((ROWS, COLUMNS), dtype=int)
@@ -153,40 +153,50 @@ if __name__ == '__main__':
             if event.type == pg.QUIT:
                 sys.exit()
 
-            if event.type == pg.MOUSEBUTTONDOWN:
-                if turn == 0:
+            if turn == 0:
+                possible_moves_board = np.zeros((ROWS, COLUMNS), dtype=int)
+                moves = get_moves(board, 1)
+
+                for move in get_moves(board, 1):
+                    possible_moves_board[move[0]][move[1]] = 1
+                drawing_possible_moves_for_player(possible_moves_board, 1)
+
+                if event.type == pg.MOUSEBUTTONDOWN:
                     print("PLAYER 1")
                     position = get_mouse_position()
-                    make_move(board, position[0], position[1], 1)
-                    if get_moves(board, 2) == []:
-                        game_over = True
-                        break
+                    if [position[0], position[1]] not in moves:
+                        continue
                     else:
-                        turn += 1
-                elif turn == 1:
-                    print("PLAYER 2")
-                    #position = get_mouse_position()
-                    #make_move(board, position[0], position[1], 2)
+                        make_move(board, position[0], position[1], 1)
+                        if get_moves(board, 2) == []:
+                            game_over = True
+                            print("PLAYER WINS")
+                            break
+                        else:
+                            turn += 1
 
-                    max_score = -math.inf
-                    row = 0
-                    col = 0
-                    for move in get_moves(board,2):
-                        board_modified = np.copy(board)
-                        board_modified[move[0]][move[1]] = 2
-                        score = heuristic_evaluation_function(board_modified, 2)
-                        print(str(move) + " " + str(score))
-                        if max_score < score:
-                            max_score = score
-                            row = move[0]
-                            col = move[1]
-                    print("Score: " + str(max_score) + " " + str(row) + " " + str(col))
-                    make_move(board, row, col, 2)
+            elif turn == 1:
+                print("COMPUTER")
+                max_score = -math.inf
+                row = 0
+                col = 0
+                for move in get_moves(board, 2):
+                    board_modified = np.copy(board)
+                    board_modified[move[0]][move[1]] = 2
+                    score = heuristic_evaluation_function(board_modified, 2)
+                    print(str(move) + " " + str(score))
+                    if max_score < score:
+                        max_score = score
+                        row = move[0]
+                        col = move[1]
+                print("Score: " + str(max_score) + " " + str(row) + " " + str(col))
+                make_move(board, row, col, 2)
 
-                    if get_moves(board, 1) == []:
-                        game_over = True
-                        break
-                    else:
-                        turn -= 1
+                if get_moves(board, 1) == []:
+                    game_over = True
+                    print("COMPUTER WINS")
+                    break
+                else:
+                    turn -= 1
         if game_over == True:
             pg.time.wait(3000)

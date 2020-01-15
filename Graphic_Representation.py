@@ -1,4 +1,5 @@
 import pygame as pg
+
 ROWS = 8
 COLUMNS = 8
 BLACK = (0, 0, 0)
@@ -55,3 +56,12 @@ def drawing_pieces(board, piece):
                 pg.draw.circle(screen, COLOR, (
                     column * 100 + PIECE_SIZE // 2, row * 100 + PIECE_SIZE // 2), RADIUS)
                 pg.display.update()
+
+
+def drawing_possible_moves_for_player(board, piece):
+    for row in range(8):
+        for column in range(8):
+            if board[row][column] == piece:
+                pg.draw.circle(screen, BLACK, (
+                    column * 100 + PIECE_SIZE // 2, row * 100 + PIECE_SIZE // 2), RADIUS, 1)
+            pg.display.update()
