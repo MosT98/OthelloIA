@@ -203,7 +203,7 @@ if __name__ == '__main__':
 
                 if event.type == pg.MOUSEBUTTONDOWN:
                     print("PLAYER 1")
-                    if len(get_moves(board, 2)) != 0:
+                    if len(get_moves(board, 1)) != 0:
                         check_moves(copy_moves, moves)
                         position = get_mouse_position()
                         if [position[0], position[1]] not in moves:
@@ -227,10 +227,8 @@ if __name__ == '__main__':
                         player_score, computer_score = get_scores(board, 1, 2)
                         if computer_score > player_score:
                             winning_text = FONT.render('COMPUTER WINS', True, RED)
-                            print('c wins')
                         elif player_score > computer_score:
                             winning_text = FONT.render('PLAYER WINS', True, RED)
-                            print('p wins')
                         else:
                             winning_text = FONT.render('DRAW', True, RED)
                         draw_background()
@@ -245,9 +243,10 @@ if __name__ == '__main__':
                 if len(get_moves(board, 2)) != 0:
                     if strategy == 1:   # Local Maximization
                         row, column = local_maximization(board, 2)
-                        print(row, column)
+                        print((row, column))
                         if isOnBoard(row, column):
-                            make_move(board, row, column, 2)
+                            if board[row][column] == 0:
+                                make_move(board, row, column, 2)
                             p_score, c_score = get_scores(board, 1, 2)
                             pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
                         else:
@@ -255,32 +254,32 @@ if __name__ == '__main__':
 
                     elif strategy == 2:  # Alpha Beta Pruning
                         row, column = alpha_beta_pruning(board, 2, 3)
-                        print(row, column)
+                        print((row, column))
                         if isOnBoard(row, column):
-                           make_move(board, row, column, 2)
-                           p_score, c_score = get_scores(board, 1, 2)
-                           pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
+                            if board[row][column] == 0:
+                                make_move(board, row, column, 2)
+                            p_score, c_score = get_scores(board, 1, 2)
+                            pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
                         else:
                            print("Computer skips this round.")
 
                     elif strategy == 3:  # Negamax
                         row, column = negamax(board, 2, 3)
-                        print(row, column)
+                        print((row, column))
                         if isOnBoard(row,column):
-                           make_move(board, row, column, 2)
-                           p_score, c_score = get_scores(board, 1, 2)
-                           pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
+                            if board[row][column] == 0:
+                                make_move(board, row, column, 2)
+                            p_score, c_score = get_scores(board, 1, 2)
+                            pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
                         else:
                            print("Computer skips this round.")
 
                     elif strategy == 4:  # Quiescene Search
                         row, column = quiescence_search(board, 2, 3)
-                        print(row, column)
+                        print((row, column))
                         if isOnBoard(row,column):
-                           if board[row][column] != 0:
-                               print("Eroare")
-                               break
-                           make_move(board, row, column, 2)
+                           if board[row][column] == 0:
+                                make_move(board, row, column, 2)
                            p_score, c_score = get_scores(board, 1, 2)
                            pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
                         else:
