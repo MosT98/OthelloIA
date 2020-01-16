@@ -41,7 +41,6 @@ def negamax_alg(board, current_piece, color, current_depth, target_depth):
     else:
         for move in valid_moves:
             board_modified = np.copy(board)
-            #board_modified[move[0]][move[1]] = current_piece]
             add_piece_to_board(board_modified, move[0], move[1], current_piece)
             new_row, new_column, new_value = negamax_alg(board_modified, 3 - current_piece, -color,
                                                          current_depth + 1, target_depth)

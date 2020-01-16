@@ -154,6 +154,27 @@ def check_moves(prev_moves, actual_moves):
     checking_possible_moves(to_redraw)
 
 
+def get_scores(board, player_piece, computer_piece):
+    player_score = 0
+    computer_score = 0
+    for row in range(ROWS):
+        for col in range(COLUMNS):
+            if board[row][col] == player_piece:
+                player_score += 1
+            elif board[row][col] == computer_piece:
+                computer_score += 1
+
+    return player_score, computer_score
+
+
+def is_board_complete(board):
+    counter = 0
+    for row in range(ROWS):
+        for col in range(COLUMNS):
+            if board[row][col] == 0:
+                counter += 1
+    return counter == 0
+
 if __name__ == '__main__':
     strategy = int(input("Select strategy:"))
 
@@ -182,20 +203,36 @@ if __name__ == '__main__':
 
                 if event.type == pg.MOUSEBUTTONDOWN:
                     print("PLAYER 1")
-                    check_moves(copy_moves, moves)
-                    position = get_mouse_position()
-                    if [position[0], position[1]] not in moves:
-                        continue
-                    else:
-                        make_move(board, position[0], position[1], 1)
-                        if get_moves(board, 2) == []:
-                            game_over = True
-                            winning_text = FONT.render('PLAYER WINS', True, RED)
-                            draw_background()
-                            screen.blit(winning_text, (100, 350))
-                            break
+                    if len(get_moves(board, 2)) != 0:
+                        check_moves(copy_moves, moves)
+                        position = get_mouse_position()
+                        if [position[0], position[1]] not in moves:
+                            continue
                         else:
-                            turn += 1
+                            make_move(board, position[0], position[1], 1)
+                    else:
+                        print("Player skips this round.")
+
+                    if len(get_moves(board, 1)) == 0:
+                        game_over = True
+                        winning_text = FONT.render('PLAYER WINS', True, RED)
+                        draw_background()
+                        screen.blit(winning_text, (100, 350))
+                        break
+                    elif is_board_complete(board) == True:
+                        game_over = True
+                        player_score, computer_score = get_scores(board, 1, 2)
+                        if computer_score > player_score:
+                            winning_text = FONT.render('COMPUTER WINS', True, RED)
+                        elif player_score > computer_score:
+                            winning_text = FONT.render('PLAYER WINS', True, RED)
+                        else:
+                            winning_text = FONT.render('DRAW', True, RED)
+                        draw_background()
+                        screen.blit(winning_text, (100, 350))
+                        break
+                    else:
+                        turn += 1
 
             elif turn == 1:
                 print("COMPUTER")
@@ -237,13 +274,26 @@ if __name__ == '__main__':
                 else:
                     print("Computer skips this round.")
 
-                if get_moves(board, 1) == []:
+                if len(get_moves(board, 1)) == 0:
                     game_over = True
                     winning_text = FONT.render('COMPUTER WINS', True, RED)
                     draw_background()
                     screen.blit(winning_text, (100, 350))
                     break
+                elif is_board_complete(board) == True:
+                    game_over = True
+                    player_score, computer_score = get_scores(board, 1, 2)
+                    if computer_score > player_score:
+                        winning_text = FONT.render('COMPUTER WINS', True, RED)
+                    elif player_score > computer_score:
+                        winning_text = FONT.render('PLAYER WINS', True, RED)
+                    else:
+                        winning_text = FONT.render('DRAW', True, RED)
+                    draw_background()
+                    screen.blit(winning_text, (100, 350))
+                    break
                 else:
                     turn -= 1
+
         if game_over == True:
             pg.time.wait(60000)
