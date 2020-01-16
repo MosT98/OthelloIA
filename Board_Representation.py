@@ -210,26 +210,32 @@ if __name__ == '__main__':
                             continue
                         else:
                             make_move(board, position[0], position[1], 1)
+                            p_score, c_score = get_scores(board, 1, 2)
+                            pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
                     else:
                         print("Player skips this round.")
 
-                    if len(get_moves(board, 1)) == 0:
+                    if len(get_moves(board, 2)) == 0:
                         game_over = True
                         winning_text = FONT.render('PLAYER WINS', True, RED)
                         draw_background()
                         screen.blit(winning_text, (100, 350))
+                        pg.display.update()
                         break
                     elif is_board_complete(board) == True:
                         game_over = True
                         player_score, computer_score = get_scores(board, 1, 2)
                         if computer_score > player_score:
                             winning_text = FONT.render('COMPUTER WINS', True, RED)
+                            print('c wins')
                         elif player_score > computer_score:
                             winning_text = FONT.render('PLAYER WINS', True, RED)
+                            print('p wins')
                         else:
                             winning_text = FONT.render('DRAW', True, RED)
                         draw_background()
                         screen.blit(winning_text, (100, 350))
+                        pg.display.update()
                         break
                     else:
                         turn += 1
@@ -242,6 +248,8 @@ if __name__ == '__main__':
                         print(row, column)
                         if isOnBoard(row, column):
                             make_move(board, row, column, 2)
+                            p_score, c_score = get_scores(board, 1, 2)
+                            pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
                         else:
                             print("Computer skips this round.")
 
@@ -250,6 +258,8 @@ if __name__ == '__main__':
                         print(row, column)
                         if isOnBoard(row, column):
                            make_move(board, row, column, 2)
+                           p_score, c_score = get_scores(board, 1, 2)
+                           pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
                         else:
                            print("Computer skips this round.")
 
@@ -258,6 +268,8 @@ if __name__ == '__main__':
                         print(row, column)
                         if isOnBoard(row,column):
                            make_move(board, row, column, 2)
+                           p_score, c_score = get_scores(board, 1, 2)
+                           pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
                         else:
                            print("Computer skips this round.")
 
@@ -269,6 +281,8 @@ if __name__ == '__main__':
                                print("Eroare")
                                break
                            make_move(board, row, column, 2)
+                           p_score, c_score = get_scores(board, 1, 2)
+                           pg.display.set_caption('[Othello]COMPUTER:' + str(c_score) + ' PLAYER:' + str(p_score))
                         else:
                           print("Computer skips this round.")
                 else:
@@ -279,21 +293,25 @@ if __name__ == '__main__':
                     winning_text = FONT.render('COMPUTER WINS', True, RED)
                     draw_background()
                     screen.blit(winning_text, (100, 350))
+                    pg.display.update()
                     break
                 elif is_board_complete(board) == True:
                     game_over = True
                     player_score, computer_score = get_scores(board, 1, 2)
                     if computer_score > player_score:
                         winning_text = FONT.render('COMPUTER WINS', True, RED)
+                        print('c wins')
                     elif player_score > computer_score:
                         winning_text = FONT.render('PLAYER WINS', True, RED)
+                        print('p wins')
                     else:
                         winning_text = FONT.render('DRAW', True, RED)
                     draw_background()
                     screen.blit(winning_text, (100, 350))
+                    pg.display.update()
                     break
                 else:
                     turn -= 1
 
         if game_over == True:
-            pg.time.wait(60000)
+            pg.time.wait(5000)
