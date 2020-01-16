@@ -155,6 +155,8 @@ def check_moves(prev_moves, actual_moves):
 
 
 if __name__ == '__main__':
+    strategy = int(input("Select strategy:"))
+
     pg.init()
     FONT = pg.font.SysFont('comicsansms', 70)
     board = create_board()
@@ -197,41 +199,43 @@ if __name__ == '__main__':
 
             elif turn == 1:
                 print("COMPUTER")
+                if len(get_moves(board, 2)) != 0:
+                    if strategy == 1:   # Local Maximization
+                        row, column = local_maximization(board, 2)
+                        print(row, column)
+                        if isOnBoard(row, column):
+                            make_move(board, row, column, 2)
+                        else:
+                            print("Computer skips this round.")
 
-                # Local Maximization
-                row, column = alpha_beta_pruning(board, 2, 3)
-                print(row, column)
-                if isOnBoard(row, column):
-                    make_move(board, row, column, 2)
+                    elif strategy == 2:  # Alpha Beta Pruning
+                        row, column = alpha_beta_pruning(board, 2, 3)
+                        print(row, column)
+                        if isOnBoard(row, column):
+                           make_move(board, row, column, 2)
+                        else:
+                           print("Computer skips this round.")
+
+                    elif strategy == 3:  # Negamax
+                        row, column = negamax(board, 2, 3)
+                        print(row, column)
+                        if isOnBoard(row,column):
+                           make_move(board, row, column, 2)
+                        else:
+                           print("Computer skips this round.")
+
+                    elif strategy == 4:  # Quiescene Search
+                        row, column = quiescence_search(board, 2, 3)
+                        print(row, column)
+                        if isOnBoard(row,column):
+                           if board[row][column] != 0:
+                               print("Eroare")
+                               break
+                           make_move(board, row, column, 2)
+                        else:
+                          print("Computer skips this round.")
                 else:
                     print("Computer skips this round.")
-
-                # Alpha Beta Pruning
-                # row, column = alpha_beta_pruning(board, 2, 3)
-                # print(row, column)
-                # if isOnBoard(row, column):
-                #    make_move(board, row, column, 2)
-                # else:
-                #    print("Computer skips this round.")
-
-                # Negamax
-                # row, column = negamax(board, 2, 3)
-                # print(row, column)
-                # if isOnBoard(row,column):
-                #    make_move(board, row, column, 2)
-                # else:
-                #    print("Computer skips this round.")
-
-                # Quiescene Search
-                # row, column = quiescence_search(board, 2, 3)
-                # print(row, column)
-                # if isOnBoard(row,column):
-                #    if board[row][column] != 0:
-                #        print("Eroare")
-                #        break
-                #    make_move(board, row, column, 2)
-                # else:
-                #   print("Computer skips this round.")
 
                 if get_moves(board, 1) == []:
                     game_over = True
