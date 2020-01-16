@@ -37,10 +37,17 @@ def draw_board(board):
     pg.display.update()
 
 
+def draw_background():
+    for c in range(COLUMNS):
+        for r in range(ROWS):
+            pg.draw.rect(screen, BACKGROUND, (c * PIECE_SIZE, r * PIECE_SIZE, PIECE_SIZE, PIECE_SIZE))
+
+
 def get_mouse_position():
     (mouse_x, mouse_y) = pg.mouse.get_pos()
     position = (mouse_x // PIECE_SIZE), (mouse_y // PIECE_SIZE)
     position = (position[1], position[0])
+    print(position)
     return position
 
 
@@ -65,3 +72,11 @@ def drawing_possible_moves_for_player(board, piece):
                 pg.draw.circle(screen, BLACK, (
                     column * 100 + PIECE_SIZE // 2, row * 100 + PIECE_SIZE // 2), RADIUS, 1)
             pg.display.update()
+
+
+def checking_possible_moves(moves):
+    for move in moves:
+        for i in move:
+            pg.draw.circle(screen, BACKGROUND, (
+                i[1] * 100 + PIECE_SIZE // 2, i[0] * 100 + PIECE_SIZE // 2), RADIUS+1)
+        pg.display.update()

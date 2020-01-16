@@ -1,3 +1,5 @@
+import copy
+
 from Graphic_Representation import *
 from Heuristic_Evaluation import heuristic_evaluation_function
 from Alpha_Beta_Pruning import alpha_beta_pruning
@@ -8,7 +10,6 @@ import sys
 import numpy as np
 import pandas as pd
 import math
-
 
 pd.set_option('display.expand_frame_repr', False)
 ROWS = 8
@@ -144,8 +145,17 @@ def make_move(board, row, column, piece):
     return True
 
 
+def check_moves(prev_moves, actual_moves):
+    to_redraw = []
+    if prev_moves not in actual_moves:
+        to_redraw.append(prev_moves)
+
+    checking_possible_moves(to_redraw)
+
+
 if __name__ == '__main__':
     pg.init()
+    FONT = pg.font.SysFont('comicsansms', 70)
     board = create_board()
     screen = pg.display.set_mode(BOARD_SIZE)
     draw_board(board)
@@ -161,13 +171,15 @@ if __name__ == '__main__':
             if turn == 0:
                 possible_moves_board = np.zeros((ROWS, COLUMNS), dtype=int)
                 moves = get_moves(board, 1)
+                copy_moves = copy.deepcopy(moves)
 
-                for move in get_moves(board, 1):
+                for move in moves:
                     possible_moves_board[move[0]][move[1]] = 1
                 drawing_possible_moves_for_player(possible_moves_board, 1)
 
                 if event.type == pg.MOUSEBUTTONDOWN:
                     print("PLAYER 1")
+                    check_moves(copy_moves, moves)
                     position = get_mouse_position()
                     if [position[0], position[1]] not in moves:
                         continue
@@ -175,7 +187,9 @@ if __name__ == '__main__':
                         make_move(board, position[0], position[1], 1)
                         if get_moves(board, 2) == []:
                             game_over = True
-                            print("PLAYER WINS")
+                            winning_text = FONT.render('PLAYER WINS', True, RED)
+                            draw_background()
+                            screen.blit(winning_text, (100, 350))
                             break
                         else:
                             turn += 1
@@ -183,11 +197,11 @@ if __name__ == '__main__':
             elif turn == 1:
                 print("COMPUTER")
 
-                #Euristica Simpla
-                #max_score = -math.inf
-                #row = 0
-                #col = 0
-                #for move in get_moves(board, 2):
+                # Euristica Simpla
+                # max_score = -math.inf
+                # row = 0
+                # col = 0
+                # for move in get_moves(board, 2):
                 #    board_modified = np.copy(board)
                 #    board_modified[move[0]][move[1]] = 2
                 #    score = heuristic_evaluation_function(board_modified, 2)
@@ -196,38 +210,40 @@ if __name__ == '__main__':
                 #        max_score = score
                 #        row = move[0]
                 #        col = move[1]
-                #print("Score: " + str(max_score) + " " + str(row) + " " + str(col))
-                #make_move(board, row, col, 2)
+                # print("Score: " + str(max_score) + " " + str(row) + " " + str(col))
+                # make_move(board, row, col, 2)
 
-                #Alpha Beta Pruning
-                #row, column = alpha_beta_pruning(board, 2, 3)
-                #print(row, column)
-                #if isOnBoard(row, column):
+                # Alpha Beta Pruning
+                # row, column = alpha_beta_pruning(board, 2, 3)
+                # print(row, column)
+                # if isOnBoard(row, column):
                 #    make_move(board, row, column, 2)
-                #else:
+                # else:
                 #    print("Computer skips this round.")
 
-                #Negamax
-                #row, column = negamax(board, 2, 3)
-                #print(row, column)
-                #if isOnBoard(row,column):
+                # Negamax
+                # row, column = negamax(board, 2, 3)
+                # print(row, column)
+                # if isOnBoard(row,column):
                 #    make_move(board, row, column, 2)
-                #else:
+                # else:
                 #    print("Computer skips this round.")
 
-                #Quiescene Search
+                # Quiescene Search
                 row, column = quiescence_search(board, 2, 3)
                 print(row, column)
-                if isOnBoard(row,column):
-                   make_move(board, row, column, 2)
+                if isOnBoard(row, column):
+                    make_move(board, row, column, 2)
                 else:
-                   print("Computer skips this round.")
+                    print("Computer skips this round.")
 
                 if get_moves(board, 1) == []:
                     game_over = True
-                    print("COMPUTER WINS")
+                    winning_text = FONT.render('COMPUTER WINS', True, RED)
+                    draw_background()
+                    screen.blit(winning_text, (100, 350))
                     break
                 else:
                     turn -= 1
         if game_over == True:
-            pg.time.wait(3000)
+            pg.time.wait(60000)
