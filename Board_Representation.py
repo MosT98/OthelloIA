@@ -2,6 +2,7 @@ import copy
 
 from Graphic_Representation import *
 from Heuristic_Evaluation import heuristic_evaluation_function
+from Local_Maximization import local_maximization
 from Alpha_Beta_Pruning import alpha_beta_pruning
 from Negamax import negamax
 from Quiescence_Search import quiescence_search
@@ -197,21 +198,13 @@ if __name__ == '__main__':
             elif turn == 1:
                 print("COMPUTER")
 
-                # Euristica Simpla
-                # max_score = -math.inf
-                # row = 0
-                # col = 0
-                # for move in get_moves(board, 2):
-                #    board_modified = np.copy(board)
-                #    board_modified[move[0]][move[1]] = 2
-                #    score = heuristic_evaluation_function(board_modified, 2)
-                #    print(str(move) + " " + str(score))
-                #    if max_score < score:
-                #        max_score = score
-                #        row = move[0]
-                #        col = move[1]
-                # print("Score: " + str(max_score) + " " + str(row) + " " + str(col))
-                # make_move(board, row, col, 2)
+                # Local Maximization
+                row, column = alpha_beta_pruning(board, 2, 3)
+                print(row, column)
+                if isOnBoard(row, column):
+                    make_move(board, row, column, 2)
+                else:
+                    print("Computer skips this round.")
 
                 # Alpha Beta Pruning
                 # row, column = alpha_beta_pruning(board, 2, 3)
@@ -230,12 +223,15 @@ if __name__ == '__main__':
                 #    print("Computer skips this round.")
 
                 # Quiescene Search
-                row, column = quiescence_search(board, 2, 3)
-                print(row, column)
-                if isOnBoard(row, column):
-                    make_move(board, row, column, 2)
-                else:
-                    print("Computer skips this round.")
+                # row, column = quiescence_search(board, 2, 3)
+                # print(row, column)
+                # if isOnBoard(row,column):
+                #    if board[row][column] != 0:
+                #        print("Eroare")
+                #        break
+                #    make_move(board, row, column, 2)
+                # else:
+                #   print("Computer skips this round.")
 
                 if get_moves(board, 1) == []:
                     game_over = True

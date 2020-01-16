@@ -50,21 +50,22 @@ def is_terminal_state(board, current_piece):
         return False
 
 
-def is_board_quiet(board, current_piece, row, column):
+def is_board_quiet(board, current_piece, prev_move_row, prev_move_column):
     from Board_Representation import get_moves, isOnBoard
     if len(get_moves(board, current_piece)) == 1:
         return False
 
-    if isOnBoard(row, column) == True:
-        if (row, column) in CORNERS_LIST == True or (row, column) in ADJACENT_CORNERS_LIST == True:
+    if isOnBoard(prev_move_row, prev_move_column) == True:
+        if (prev_move_row, prev_move_column) in CORNERS_LIST == True or (
+                prev_move_row, prev_move_column) in ADJACENT_CORNERS_LIST == True:
             return False
 
     return True
 
 
-def quiescence_search_alg(board, current_piece, current_depth, target_depth, row, column):
-    if is_board_quiet(board, current_piece, row, column) == True or current_depth == target_depth or is_terminal_state(
-            board, current_piece) == True:
+def quiescence_search_alg(board, current_piece, current_depth, target_depth, prev_move_row, prev_move_column):
+    if is_board_quiet(board, current_piece, prev_move_row, prev_move_column) == True or \
+            current_depth == target_depth or is_terminal_state(board, current_piece) == True:
         return (None, None, heuristic_evaluation_function(board, computer_piece))
 
     if current_depth % 2 == 0:
@@ -101,15 +102,15 @@ def quiescence_search_alg(board, current_piece, current_depth, target_depth, row
         return (current_row, current_column, current_value)
 
 
-def normal_search(board, current_piece, current_depth, target_depth, row, column):
+def normal_search(board, current_piece, current_depth, target_depth, prev_move_row, prev_move_column):
     if is_terminal_state(board, current_piece) == True:
         return (None, None, heuristic_evaluation_function(board, computer_piece))
 
     if current_depth == target_depth:
-        if is_board_quiet(board, current_piece, row, column) == True:
+        if is_board_quiet(board, current_piece, prev_move_row, prev_move_column) == True:
             return (None, None, heuristic_evaluation_function(board, computer_piece))
         else:
-            return quiescence_search_alg(board, current_piece, 0, 3, row, column)
+            return quiescence_search_alg(board, current_piece, 0, 3, prev_move_row, prev_move_column)
 
     if current_depth % 2 == 0:
         current_value = -math.inf
@@ -144,41 +145,9 @@ def normal_search(board, current_piece, current_depth, target_depth, row, column
 
         return (current_row, current_column, current_value)
 
-    # current_value = color * heuristic_evaluation_function(board, computer_piece)
-    # alpha = max(alpha, current_value)
-    #
-    # if alpha >= beta:
-    #    return (None, None, current_value)
-    #
-    # current_row = -1
-    # current_column = -1
-    #
-    # valid_moves = get_moves(board, current_piece)
-    #
-    # if len(valid_moves) == 0:
-    #    return (None, None, 0)
-    # else:
-    #    for move in valid_moves:
-    #        board_modified = np.copy(board)
-    #        add_piece_to_board(board_modified, move[0], move[1], current_piece)
-    #        new_row, new_column, new_value = quiescene_search_alg(board_modified, 3 - current_piece, -color, -beta, -alpha)
-    #        new_value *= -1
-    #
-    #        if new_value > current_value:
-    #            current_value = new_value
-    #            current_row = move[0]
-    #            current_column = move[1]
-    #
-    #        alpha = max(alpha, current_value)
-    #        if alpha >= beta:
-    #            break
-    #
-    #    return (current_row, current_column, current_value)
-    #
-
 
 def quiescence_search(board, piece, depth):
     best_row, best_column, best_score = normal_search(board, current_piece=piece, current_depth=0, target_depth=depth,
-                                                      row=-1, column=-1)
+                                                      prev_move_row=-1, prev_move_column=-1)
 
     return (best_row, best_column)
